@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>從 Google Sheets 顯示圖片</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <img id="event-photo" src="" alt="載入中...">
+    
+    <script>
+        function fetchImage() {
+            const sheetID = "1_j8ny-7jagYKfdhi8Rz7IKiJsowvbreLnDECpU0jiNI";
+            const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+    
+            fetch(url)
+                .then(response => response.text())
+                .then(text => {
+                    let json = JSON.parse(text.substr(47).slice(0, -2)); // 解析 JSON
+                    let imageURL = json.table.rows[1].c[1].v; // 讀取 A1 儲存的圖片網址
+    
+                    document.getElementById("event-photo").src = imageURL; // 更新圖片
+                })
+                .catch(error => console.error("無法讀取 Google Sheets:", error));
+        }
+    
+        document.addEventListener("DOMContentLoaded", fetchImage);
+    </script>
+</body>
+</html>
